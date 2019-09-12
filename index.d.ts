@@ -63,9 +63,9 @@ declare module 'react-native-plain-calendar' {
     maxDate?: string
     
     /**
-     * Array of the disabled days
+     * Array of disabled days
      */
-    disabledDates?: Array<String>
+    disabledDates?: string[]
     
     // -------------- HEADER -------------- //
   
@@ -139,7 +139,7 @@ declare module 'react-native-plain-calendar' {
      * ["Sunday", "Monday", ...]
      * ```
      */
-    weekdays?: Array<String>
+    weekdays?: string[]
 
     /**
      * The style of the week container(View).
