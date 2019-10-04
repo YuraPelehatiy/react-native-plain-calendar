@@ -1,14 +1,22 @@
-import React, { useState, useReducer, useEffect } from 'react';
-import { View } from 'react-native';
-import dateFns from 'date-fns';
-import T from 'prop-types';
-import Header from './Header/Header';
-import Week from './Week/Week';
-import Cells from './Cells/Cells';
+import * as dateFns from 'date-fns';
+import * as React from 'react';
+import { useEffect, useReducer, useState } from 'react';
+import { View, ViewProps } from 'react-native';
 import { dateFormats } from '../constants';
 import { isWithinRangeWithArray } from '../utils';
+import { Cells, CellsProps } from './Cells/Cells';
+import { Header, HeaderProps } from './Header/Header';
+import { Week, WeekProps } from './Week/Week';
 
-function Calendar({
+export interface CalendarProps extends ViewProps, Partial<HeaderProps>, Partial<WeekProps>, Partial<CellsProps> {
+  initialDate?: Date;
+  weekdays?: string[];
+  disabledDayPick?: boolean;
+  headerDateFormat?: string;
+  onDayPress?(date: Date): void;
+}
+
+export function Calendar({
   onDayPress,
   initialDate,
   selectedDate,
@@ -18,14 +26,14 @@ function Calendar({
   maxDate,
   disabledDates,
   style,
-  headerDateFormat,
+  headerDateFormat = dateFormats.headerFormat,
   headerContainerStyle,
   headerTitleStyle,
   headerButtonStyle,
   HeaderComponent,
   HeaderButtonComponent,
   weekStartsOn,
-  weekdays,
+  weekdays = [],
   weekContainerStyle,
   weekdayContainerStyle,
   weekdayStyle,
@@ -48,10 +56,10 @@ function Calendar({
   daySelectedTextStyle,
   dayDisabledTextStyle,
   dayDisabledParticularTextStyle,
-  disabledDayPick,
+  disabledDayPick = true,
   ...props
-}) {
-  const [currentMonth, setCurrentMonth] = useState(new Date());
+}: CalendarProps) {
+  const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
 
   useEffect(() => {
     if (initialDate) {
@@ -59,7 +67,7 @@ function Calendar({
     }
   }, []);
 
-  function onDateClick(day) {
+  function onDateClick(day: Date) {
     const monthDifferent = dateFns.differenceInCalendarMonths(
       day,
       currentMonth,
@@ -142,49 +150,6 @@ function Calendar({
   );
 }
 
-Calendar.propTypes = {
-  onDayPress: T.func,
-  selectedDate: T.oneOfType([T.string, T.instanceOf(Date)]),
-  initialDate: T.oneOfType([T.string, T.instanceOf(Date)]),
-  startSelectedDate: T.oneOfType([T.string, T.instanceOf(Date)]),
-  endSelectedDate: T.oneOfType([T.string, T.instanceOf(Date)]),
-  minDate: T.oneOfType([T.string, T.instanceOf(Date)]),
-  maxDate: T.oneOfType([T.string, T.instanceOf(Date)]),
-  style: T.any,
-  HeaderComponent: T.func,
-  HeaderButtonComponent: T.func,
-  headerDateFormat: T.string,
-  headerContainerStyle: T.any,
-  headerTitleStyle: T.any,
-  headerButtonStyle: T.any,
-  weekStartsOn: T.number,
-  weekdays: T.arrayOf(T.string),
-  weekContainerStyle: T.any,
-  weekdayContainerStyle: T.any,
-  weekdayStyle: T.any,
-  WeekdaysComponent: T.oneOf([null]),
-  disabledDates: T.array,
-  cellsStyle: T.any,
-  daysRowStyle: T.any,
-  dayContainerStyle: T.any,
-  DayComponent: T.func,
-  todayStyle: T.any,
-  dayStyle: T.any,
-  daySelectedStyle: T.any,
-  daySingleSelectedStyle: T.any,
-  dayStartSelectedStyle: T.any,
-  dayEndSelectedStyle: T.any,
-  dayIntermediateSelectedStyle: T.any,
-  dayDisabledStyle: T.any,
-  dayDisabledParticularStyle: T.any,
-  todayTextStyle: T.any,
-  dayTextStyle: T.any,
-  daySelectedTextStyle: T.any,
-  dayDisabledTextStyle: T.any,
-  dayDisabledParticularTextStyle: T.any,
-  disabledDayPick: T.bool,
-};
-
 Calendar.defaultProps = {
   weekStartsOn: 0,
   weekdays: [],
@@ -193,13 +158,29 @@ Calendar.defaultProps = {
   disabledDayPick: true,
 };
 
-const initialState = {
+interface StateType {
+  selectedDate: Date | null;
+  startSelectedDate: Date | null;
+  endSelectedDate: Date | null;
+}
+
+interface ActionType {
+  type: 'SELECTED_DATE' 
+  | 'START_SELECTED_DATE' 
+  | 'END_SELECTED_DATE' 
+  | 'START_END_SELECTED_DATE' 
+  | 'START_END_RESET_SINGLE_DATE' 
+  | 'SINGLE_RESET_START_END_DATE';
+  payload: any,
+}
+
+const initialState: StateType = {
   selectedDate: null,
   startSelectedDate: null,
   endSelectedDate: null,
 };
 
-function reducer(state, action) {
+function reducer(state: StateType, action: ActionType) {
   switch (action.type) {
     case 'SELECTED_DATE':
       return {
@@ -242,19 +223,31 @@ function reducer(state, action) {
   }
 }
 
-Calendar.Picker = function Picker({
+interface OnSelected {
+  selected?: Date | null,
+  selectedStart?: Date | null,
+  selectedEnd?: Date | null,
+}
+
+export interface CalendarPickerProps extends CalendarProps {
+  selectedType?: 'single' | 'range' | 'single-range';
+  onSelected?(params: OnSelected): void;
+};
+
+
+function Picker({
   onSelected,
   selectedType,
   disabledDates,
-  disabledDayPick,
+  disabledDayPick = false,
   ...props
-}) {
+}: CalendarPickerProps) {
   const [
     { selectedDate, startSelectedDate, endSelectedDate },
     dispatch,
   ] = useReducer(reducer, initialState);
 
-  function setSelectedDate(day) {
+  function setSelectedDate(day: Date | null) {
     dispatch({ type: 'SELECTED_DATE', payload: day });
   }
 
@@ -262,47 +255,52 @@ Calendar.Picker = function Picker({
   //   dispatch({ type: 'START_SELECTED_DATE', payload: day });
   // }
 
-  function setEndSelectedDate(day) {
+  function setEndSelectedDate(day: Date | null) {
     dispatch({ type: 'END_SELECTED_DATE', payload: day });
   }
 
-  function setStartEndSelectedDate(start, end) {
+  function setStartEndSelectedDate(start: Date | null, end: Date | null) {
     dispatch({
       type: 'START_END_SELECTED_DATE',
       payload: { start, end },
     });
   }
 
-  function setStartEndResetSingleDate(start, end) {
+  function setStartEndResetSingleDate(start: Date | null, end: Date | null) {
     dispatch({
       type: 'START_END_RESET_SINGLE_DATE',
       payload: { start, end },
     });
   }
 
-  function setSingleResetStartEndDate(day) {
+  function setSingleResetStartEndDate(day: Date | null) {
     dispatch({
       type: 'SINGLE_RESET_START_END_DATE',
       payload: day,
     });
   }
 
-  function callOnSelected() {
+  function callOnSelected({
+    selected = null,
+    selectedStart = null,
+    selectedEnd = null,
+  }: OnSelected) {
     if (onSelected) {
-      onSelected();
+      onSelected({ selected, selectedStart, selectedEnd });
     }
   }
 
-  function onRangeSelect(day) {
+  function onRangeSelect(day: Date) {
     if (startSelectedDate && !endSelectedDate) {
       if (
-        isWithinRangeWithArray(disabledDates, startSelectedDate, day)
+        !!disabledDates && isWithinRangeWithArray(disabledDates, startSelectedDate, day)
       ) {
         return;
       }
 
       if (dateFns.isSameDay(day, startSelectedDate)) {
         setStartEndSelectedDate(null, null);
+        callOnSelected({ selectedStart: null, selectedEnd: null })
 
         return;
       }
@@ -313,6 +311,7 @@ Calendar.Picker = function Picker({
       if (dateFns.isBefore(day, startSelectedDate)) {
         const endDate = startSelectedDate;
         setStartEndResetSingleDate(day, endDate);
+        callOnSelected({ selectedStart: day, selectedEnd: endDate })
 
         return;
       }
@@ -320,47 +319,50 @@ Calendar.Picker = function Picker({
     } else {
       if (dateFns.isSameDay(day, endSelectedDate)) {
         setStartEndSelectedDate(startSelectedDate, null);
+        callOnSelected({ selectedStart: startSelectedDate })
 
         return;
       }
 
       setStartEndSelectedDate(day, null);
+      callOnSelected({ selectedStart: day })
     }
   }
 
-  function onSingleSelect(day) {
+  function onSingleSelect(day: Date) {
     if (dateFns.isSameDay(day, selectedDate)) {
       setSelectedDate(null);
+      callOnSelected({ selected: null, });
 
       return;
     }
 
     setSelectedDate(day);
-    callOnSelected();
+    callOnSelected({ selected: day, });
   }
 
-  function onSingleRangeSelect(day) {
+  function onSingleRangeSelect(day: Date) {
     if (selectedDate) {
       if (dateFns.isBefore(day, selectedDate)) {
         const endDate = selectedDate;
 
         setStartEndResetSingleDate(day, endDate);
-        callOnSelected();
+        callOnSelected({ selectedStart: day, selectedEnd: endDate });
 
         return;
       }
 
       setStartEndResetSingleDate(selectedDate, day);
-      callOnSelected();
+      callOnSelected({ selectedStart: selectedDate, selectedEnd: day });
 
       return;
     }
 
     setSingleResetStartEndDate(day);
-    callOnSelected();
+    callOnSelected({ selected: day });
   }
 
-  function onDayPress(day) {
+  function onDayPress(day: Date) {
     if (selectedType === 'range') {
       onRangeSelect(day);
     } else if (selectedType === 'single-range') {
@@ -376,7 +378,6 @@ Calendar.Picker = function Picker({
       onDayPress={onDayPress}
       startSelectedDate={startSelectedDate}
       endSelectedDate={endSelectedDate}
-      minDate={new Date()}
       disabledDates={disabledDates}
       disabledDayPick={disabledDayPick}
       {...props}
@@ -384,16 +385,6 @@ Calendar.Picker = function Picker({
   );
 };
 
-Calendar.Picker.defaultProps = {
-  selectedType: 'single',
-  disabledDayPick: false,
-};
+Calendar.Picker = Picker;
 
-Calendar.Picker.propTypes = {
-  onSelected: T.func,
-  selectedType: T.oneOf(['single', 'range', 'single-range']),
-  disabledDates: T.array,
-  disabledDayPick: T.bool,
-};
 
-export default Calendar;

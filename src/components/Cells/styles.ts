@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-export default StyleSheet.create({
+export const s = StyleSheet.create({
   dayContainer: {
     flex: 1,
     justifyContent: 'center',

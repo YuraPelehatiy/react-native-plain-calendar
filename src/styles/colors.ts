@@ -1,4 +1,4 @@
-export default {
+export const colors = {
   day: {
     text: '#777',
     disabledText: '#aaa',

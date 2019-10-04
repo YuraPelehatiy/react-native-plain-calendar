@@ -1,8 +1,42 @@
-import React from 'react';
-import { Text } from 'react-native';
-import T from 'prop-types';
-import Touchable from '../Touchable/Touchable';
-import s from './styles';
+import * as React from 'react';
+import { StyleProp, Text, TextStyle, ViewStyle } from 'react-native';
+import { Touchable } from '../Touchable/Touchable';
+import { s } from './styles';
+
+export interface DayStyleProps {
+  todayStyle?: StyleProp<ViewStyle>,
+  dayStyle?: StyleProp<ViewStyle>,
+  daySelectedStyle?: StyleProp<ViewStyle>,
+  daySingleSelectedStyle?: StyleProp<ViewStyle>,
+  dayStartSelectedStyle?: StyleProp<ViewStyle>,
+  dayEndSelectedStyle?: StyleProp<ViewStyle>,
+  dayIntermediateSelectedStyle?: StyleProp<ViewStyle>,
+  dayDisabledStyle?: StyleProp<ViewStyle>,
+  dayDisabledParticularStyle?: StyleProp<ViewStyle>,
+  todayTextStyle?: StyleProp<TextStyle>,
+  dayTextStyle?: StyleProp<TextStyle>,
+  daySelectedTextStyle?: StyleProp<TextStyle>,
+  dayDisabledTextStyle?: StyleProp<TextStyle>,
+  dayDisabledParticularTextStyle?: StyleProp<TextStyle>,
+}
+
+export interface DayComponentProps {
+  isToday: boolean,
+  isSelectedDate: boolean,
+  isSingleSelectedDate: boolean,
+  isStartSelectedDate: boolean,
+  isEndSelectedDate: boolean,
+  isIntermediateSelectedDate: boolean,
+  isDisabledDate: boolean,
+  isDisabledParticularDate: boolean,
+  date: string,
+  onPress(): void,
+}
+
+export interface DayProps extends DayComponentProps, DayStyleProps {
+  DayComponent?: React.FunctionComponent<DayComponentProps>
+  disabledDayPick: boolean,
+}
 
 function Day({
   onPress,
@@ -31,7 +65,7 @@ function Day({
   dayDisabledTextStyle,
   dayDisabledParticularTextStyle,
   disabledDayPick,
-}) {
+}: DayProps) {
   if (DayComponent) {
     return (
       <DayComponent
@@ -93,33 +127,6 @@ function Day({
   );
 }
 
-Day.propTypes = {
-  date: T.string.isRequired,
-  onPress: T.func.isRequired,
-  isToday: T.bool.isRequired,
-  isSelectedDate: T.bool,
-  isSingleSelectedDate: T.bool.isRequired,
-  isStartSelectedDate: T.bool.isRequired,
-  isEndSelectedDate: T.bool.isRequired,
-  isIntermediateSelectedDate: T.bool,
-  isDisabledDate: T.bool.isRequired,
-  isDisabledParticularDate: T.bool.isRequired,
-  DayComponent: T.func,
-  todayStyle: T.any,
-  dayStyle: T.any,
-  daySelectedStyle: T.any,
-  daySingleSelectedStyle: T.any,
-  dayStartSelectedStyle: T.any,
-  dayEndSelectedStyle: T.any,
-  dayIntermediateSelectedStyle: T.any,
-  dayDisabledStyle: T.any,
-  dayDisabledParticularStyle: T.any,
-  todayTextStyle: T.any,
-  dayTextStyle: T.any,
-  daySelectedTextStyle: T.any,
-  dayDisabledTextStyle: T.any,
-  dayDisabledParticularTextStyle: T.any,
-  disabledDayPick: T.bool,
-};
+const DayMemo = React.memo(Day);
 
-export default React.memo(Day);
+export { DayMemo as Day };

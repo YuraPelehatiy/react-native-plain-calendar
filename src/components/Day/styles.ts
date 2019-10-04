@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { colors } from '../../styles';
 
-export default StyleSheet.create({
+export const s = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
@@ -28,8 +28,12 @@ export default StyleSheet.create({
     alignSelf: 'center',
   },
   selected: {
+    borderWidth: 0,
+    borderRadius: 0,
     backgroundColor: colors.day.selected,
     height: 40,
+    width: '100%',
+    alignSelf: 'stretch',
   },
   singleSelected: {
     width: 40,

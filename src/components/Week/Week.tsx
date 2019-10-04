@@ -1,9 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text } from 'react-native';
-import dateFns from 'date-fns';
-import T from 'prop-types';
+import * as dateFns from 'date-fns';
+import * as React from 'react';
+import { useEffect, useState } from 'react';
+import { StyleProp, Text, TextStyle, View, ViewStyle } from 'react-native';
 import { dateFormats } from '../../constants';
-import s from './styles';
+import { WeekDayNumber } from '../../types';
+import { s } from './styles';
+
+export interface WeekProps {
+  weekdayContainerStyle?: StyleProp<ViewStyle>
+  weekdayStyle?: StyleProp<TextStyle>
+  weekContainerStyle?: StyleProp<ViewStyle>
+  weekdays: string[],
+  weekStartsOn?: WeekDayNumber,
+  WeekdaysComponent?: null,
+}
+
+interface WeekPrivateProps extends WeekProps {
+  currentMonth: Date,
+}
 
 function Week({
   currentMonth,
@@ -13,12 +27,12 @@ function Week({
   weekdays,
   weekStartsOn,
   WeekdaysComponent,
-}) {
+}: WeekPrivateProps) {
   if (WeekdaysComponent === null) {
     return null;
   }
 
-  const [formatedWeekdays, setFormatedWeekdays] = useState([]);
+  const [formatedWeekdays, setFormatedWeekdays] = useState<string []>([]);
 
   useEffect(() => {
     const secondPart = weekdays.slice(0, weekStartsOn);
@@ -35,7 +49,7 @@ function Week({
     weekStartsOn,
   });
 
-  function getWeekDay(index) {
+  function getWeekDay(index: number) {
     if (formatedWeekdays && formatedWeekdays.length === 7) {
       return formatedWeekdays[index];
     }
@@ -59,14 +73,6 @@ function Week({
   );
 }
 
-Week.propTypes = {
-  currentMonth: T.instanceOf(Date).isRequired,
-  weekdays: T.array,
-  weekStartsOn: T.number,
-  weekContainerStyle: T.any,
-  weekdayContainerStyle: T.any,
-  weekdayStyle: T.any,
-  WeekdaysComponent: T.oneOf([null]),
-};
+const WeekMemo = React.memo(Week);
 
-export default React.memo(Week);
+export { WeekMemo as Week };

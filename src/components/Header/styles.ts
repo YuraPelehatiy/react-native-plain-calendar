@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-export default StyleSheet.create({
+export const s = StyleSheet.create({
   header: {
     width: '100%',
     flexDirection: 'row',
@@ -14,6 +14,9 @@ export default StyleSheet.create({
   headerTitleContainer: {
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  headerTitle: {
+    textAlign: 'center',
   },
   headerNextButton: {
     alignItems: 'flex-end',
