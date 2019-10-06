@@ -5,10 +5,11 @@ import { View, ViewProps } from 'react-native';
 import { dateFormats } from '../constants';
 import { isWithinRangeWithArray } from '../utils';
 import { Cells, CellsProps } from './Cells/Cells';
+import { DayStyleProps } from './Day/Day';
 import { Header, HeaderProps } from './Header/Header';
 import { Week, WeekProps } from './Week/Week';
 
-export interface CalendarProps extends ViewProps, Partial<HeaderProps>, Partial<WeekProps>, Partial<CellsProps> {
+export interface CalendarProps extends ViewProps, Partial<HeaderProps>, Partial<WeekProps>, Partial<CellsProps>, DayStyleProps {
   initialDate?: Date;
   weekdays?: string[];
   disabledDayPick?: boolean;
@@ -16,32 +17,16 @@ export interface CalendarProps extends ViewProps, Partial<HeaderProps>, Partial<
   onDayPress?(date: Date): void;
 }
 
-export function Calendar({
-  onDayPress,
-  initialDate,
-  selectedDate,
-  startSelectedDate,
-  endSelectedDate,
-  minDate,
-  maxDate,
-  disabledDates,
-  style,
-  headerDateFormat = dateFormats.headerFormat,
+function createProps({
   headerContainerStyle,
   headerTitleStyle,
   headerButtonStyle,
-  HeaderComponent,
-  HeaderButtonComponent,
-  weekStartsOn,
-  weekdays = [],
   weekContainerStyle,
   weekdayContainerStyle,
   weekdayStyle,
-  WeekdaysComponent,
   cellsStyle,
   daysRowStyle,
   dayContainerStyle,
-  DayComponent,
   todayStyle,
   dayStyle,
   daySelectedStyle,
@@ -56,9 +41,76 @@ export function Calendar({
   daySelectedTextStyle,
   dayDisabledTextStyle,
   dayDisabledParticularTextStyle,
+  ...props
+}: CalendarProps){
+  const headerPropsStyle = {
+    headerContainerStyle,
+    headerTitleStyle,
+    headerButtonStyle,
+  }
+
+  const weekPropsStyle = {
+    weekContainerStyle,
+    weekdayContainerStyle,
+    weekdayStyle,
+  }
+
+  const cellsPropsStyle = {
+    cellsStyle,
+    daysRowStyle,
+    dayContainerStyle,
+  }
+
+  const dayPropsStyle = {
+    todayStyle,
+    dayStyle,
+    daySelectedStyle,
+    daySingleSelectedStyle,
+    dayStartSelectedStyle,
+    dayEndSelectedStyle,
+    dayIntermediateSelectedStyle,
+    dayDisabledStyle,
+    dayDisabledParticularStyle,
+    todayTextStyle,
+    dayTextStyle,
+    daySelectedTextStyle,
+    dayDisabledTextStyle,
+    dayDisabledParticularTextStyle,
+  }
+
+  return {
+    viewProps: props,
+    headerPropsStyle,
+    weekPropsStyle,
+    cellsPropsStyle,
+    dayPropsStyle,
+  }
+}
+
+export function Calendar({
+  onDayPress,
+  initialDate,
+  selectedDate,
+  startSelectedDate,
+  endSelectedDate,
+  minDate,
+  maxDate,
+  disabledDates,
+  headerDateFormat = dateFormats.headerFormat,
+  headerContainerStyle,
+  headerTitleStyle,
+  headerButtonStyle,
+  HeaderComponent,
+  HeaderButtonComponent,
+  weekStartsOn,
+  weekdays = [],
+  WeekdaysComponent,
+  DayComponent,
   disabledDayPick = true,
   ...props
 }: CalendarProps) {
+  const { viewProps, headerPropsStyle, weekPropsStyle, cellsPropsStyle, dayPropsStyle } = createProps(props)
+
   const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
 
   useEffect(() => {
@@ -93,26 +145,22 @@ export function Calendar({
   }
 
   return (
-    <View style={style} {...props}>
+    <View {...viewProps}>
       <Header
         onPrevMonth={onPrevMonth}
         currentMonth={currentMonth}
         onNextMonth={onNextMonth}
         headerDateFormat={headerDateFormat}
-        headerContainerStyle={headerContainerStyle}
-        headerTitleStyle={headerTitleStyle}
-        headerButtonStyle={headerButtonStyle}
         HeaderComponent={HeaderComponent}
         HeaderButtonComponent={HeaderButtonComponent}
+        {...headerPropsStyle}
       />
       <Week
         currentMonth={currentMonth}
         weekStartsOn={weekStartsOn}
         weekdays={weekdays}
-        weekContainerStyle={weekContainerStyle}
-        weekdayContainerStyle={weekdayContainerStyle}
-        weekdayStyle={weekdayStyle}
         WeekdaysComponent={WeekdaysComponent}
+        {...weekPropsStyle}
       />
       <Cells
         selectedDate={selectedDate}
@@ -124,27 +172,11 @@ export function Calendar({
         maxDate={maxDate}
         weekStartsOn={weekStartsOn}
         disabledDates={disabledDates}
-        dayContainerStyle={dayContainerStyle}
-        cellsStyle={cellsStyle}
-        daysRowStyle={daysRowStyle}
         DayComponent={DayComponent}
-        todayStyle={todayStyle}
-        dayStyle={dayStyle}
-        daySelectedStyle={daySelectedStyle}
-        daySingleSelectedStyle={daySingleSelectedStyle}
-        dayStartSelectedStyle={dayStartSelectedStyle}
-        dayEndSelectedStyle={dayEndSelectedStyle}
-        dayIntermediateSelectedStyle={dayIntermediateSelectedStyle}
-        dayDisabledStyle={dayDisabledStyle}
-        dayDisabledParticularStyle={dayDisabledParticularStyle}
-        todayTextStyle={todayTextStyle}
-        dayTextStyle={dayTextStyle}
-        daySelectedTextStyle={daySelectedTextStyle}
-        dayDisabledTextStyle={dayDisabledTextStyle}
-        dayDisabledParticularTextStyle={
-          dayDisabledParticularTextStyle
-        }
         disabledDayPick={disabledDayPick}
+        dayPropsStyle={dayPropsStyle}
+        {...cellsPropsStyle}
+
       />
     </View>
   );

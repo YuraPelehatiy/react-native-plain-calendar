@@ -3,24 +3,12 @@ import * as React from 'react';
 import { useMemo } from 'react';
 import { StyleProp, View, ViewStyle } from 'react-native';
 import { dateFormats } from '../../constants';
-import { WeekDayNumber } from '../../types';
-import { isBetween } from '../../utils';
-import { Day, DayComponentProps, DayStyleProps } from '../Day/Day';
+import { Cell, CellProps } from './Cell';
 import { s } from './styles';
 
-export interface CellsProps extends DayStyleProps {
-  selectedDate?: Date;
-  startSelectedDate?: Date;
-  endSelectedDate?: Date;
-  minDate?: Date;
-  maxDate?: Date;
-  disabledDates?: Date[];
-  weekStartsOn?: WeekDayNumber;
+export interface CellsProps extends CellProps {
   cellsStyle?: StyleProp<ViewStyle>;
   daysRowStyle?: StyleProp<ViewStyle>;
-  dayContainerStyle?: StyleProp<ViewStyle>;
-  DayComponent?: React.FunctionComponent<DayComponentProps>;
-  disabledDayPick: boolean;
 }
 
 interface CellsPrivateProps extends CellsProps {
@@ -42,30 +30,35 @@ export function Cells({
   daysRowStyle,
   dayContainerStyle,
   DayComponent,
-  todayStyle,
-  dayStyle,
-  daySelectedStyle,
-  daySingleSelectedStyle,
-  dayStartSelectedStyle,
-  dayEndSelectedStyle,
-  dayIntermediateSelectedStyle,
-  dayDisabledStyle,
-  dayDisabledParticularStyle,
-  todayTextStyle,
-  dayTextStyle,
-  daySelectedTextStyle,
-  dayDisabledTextStyle,
-  dayDisabledParticularTextStyle,
+  dayPropsStyle,
   disabledDayPick,
 }: CellsPrivateProps) {
-  const monthStart: Date = dateFns.startOfMonth(currentMonth);
-  const monthEnd: Date = dateFns.endOfMonth(monthStart);
-  const startDate: Date = dateFns.startOfWeek(monthStart, {
-    weekStartsOn,
-  });
-  const endDate: Date = dateFns.startOfWeek(monthEnd, {
-    weekStartsOn,
-  });
+  const { monthStart, startDate, endDate } = useMemo(() => {
+    const currentMonthStart: Date = dateFns.startOfMonth(
+      currentMonth,
+    );
+    const currentMonthEnd: Date = dateFns.endOfMonth(
+      currentMonthStart,
+    );
+    const currentMonthStartDate: Date = dateFns.startOfWeek(
+      currentMonthStart,
+      {
+        weekStartsOn,
+      },
+    );
+    const currentMonthEndDate: Date = dateFns.startOfWeek(
+      currentMonthEnd,
+      {
+        weekStartsOn,
+      },
+    );
+
+    return {
+      monthStart: currentMonthStart,
+      startDate: currentMonthStartDate,
+      endDate: currentMonthEndDate,
+    };
+  }, [currentMonth, weekStartsOn]);
 
   const dateFormat: string = dateFormats.cellsFormat;
 
@@ -83,127 +76,25 @@ export function Cells({
       formattedDate = dateFns.format(day, dateFormat);
       const cloneDay = day;
 
-      const isToday: boolean = useMemo(() => {
-        if (startSelectedDate && endSelectedDate) {
-          return (
-            !dateFns.isSameDay(day, startSelectedDate) &&
-            !dateFns.isSameDay(day, endSelectedDate) &&
-            dateFns.isSameDay(day, new Date())
-          );
-        } else {
-          return dateFns.isSameDay(day, new Date());
-        }
-      }, [day, startSelectedDate, endSelectedDate]);
-
-      const isDisabledParticularDate: boolean = useMemo(() => {
-        if (!!disabledDates) {
-          return disabledDates.some((disabled: number | Date) =>
-            dateFns.isSameDay(day, disabled),
-          );
-        } else {
-          return false;
-        }
-      }, [disabledDates, day]);
-
-      const isDisabledDate: boolean = useMemo(() => {
-        const isSameMonth = dateFns.isSameMonth(day, monthStart);
-
-        let isBeforeDay = false;
-        if (minDate) {
-          isBeforeDay = dateFns.isBefore(
-            day,
-            dateFns.subDays(minDate, 1),
-          );
-        }
-
-        let isAfterDay = false;
-        if (maxDate) {
-          isAfterDay = dateFns.isAfter(day, maxDate);
-        }
-
-        return (
-          !isSameMonth ||
-          isBeforeDay ||
-          isAfterDay ||
-          isDisabledParticularDate
-        );
-      }, [day, monthStart, minDate, maxDate]);
-
-      const isSingleSelectedDate: boolean = useMemo(() => {
-        if (selectedDate) {
-          return dateFns.isSameDay(day, selectedDate);
-        } else {
-          return false;
-        }
-      }, [selectedDate, day]);
-
-      const isStartSelectedDate: boolean = useMemo(() => {
-        if (startSelectedDate) {
-          return dateFns.isSameDay(day, startSelectedDate);
-        } else {
-          return false;
-        }
-      }, [day, startSelectedDate]);
-
-      const isEndSelectedDate: boolean = useMemo(() => {
-        if (endSelectedDate) {
-          return dateFns.isSameDay(day, endSelectedDate);
-        } else {
-          return false;
-        }
-      }, [day, endSelectedDate]);
-
-      const isIntermediateSelectedDate: boolean = useMemo(
-        () =>
-          !!(
-            startSelectedDate &&
-            endSelectedDate &&
-            isBetween(startSelectedDate, endSelectedDate, day)
-          ),
-        [startSelectedDate, endSelectedDate, day],
-      );
-
-      const isSelectedDate: boolean =
-        isSingleSelectedDate ||
-        isStartSelectedDate ||
-        isEndSelectedDate ||
-        isIntermediateSelectedDate;
-
       days.push(
-        <View style={[s.dayContainer, dayContainerStyle]} key={key}>
-          <Day
-            date={formattedDate}
-            DayComponent={DayComponent}
-            onPress={() => onDateClick(new Date(cloneDay))}
-            isToday={isToday}
-            isDisabledDate={isDisabledDate}
-            isDisabledParticularDate={isDisabledParticularDate}
-            isSelectedDate={isSelectedDate}
-            isSingleSelectedDate={isSingleSelectedDate}
-            isStartSelectedDate={isStartSelectedDate}
-            isEndSelectedDate={isEndSelectedDate}
-            isIntermediateSelectedDate={isIntermediateSelectedDate}
-            todayStyle={todayStyle}
-            dayStyle={dayStyle}
-            daySelectedStyle={daySelectedStyle}
-            daySingleSelectedStyle={daySingleSelectedStyle}
-            dayStartSelectedStyle={dayStartSelectedStyle}
-            dayEndSelectedStyle={dayEndSelectedStyle}
-            dayIntermediateSelectedStyle={
-              dayIntermediateSelectedStyle
-            }
-            dayDisabledStyle={dayDisabledStyle}
-            dayDisabledParticularStyle={dayDisabledParticularStyle}
-            todayTextStyle={todayTextStyle}
-            dayTextStyle={dayTextStyle}
-            daySelectedTextStyle={daySelectedTextStyle}
-            dayDisabledTextStyle={dayDisabledTextStyle}
-            dayDisabledParticularTextStyle={
-              dayDisabledParticularTextStyle
-            }
-            disabledDayPick={disabledDayPick}
-          />
-        </View>,
+        <Cell
+          key={key}
+          day={cloneDay}
+          monthStart={monthStart}
+          currentMonth={currentMonth}
+          formattedDate={formattedDate}
+          DayComponent={DayComponent}
+          onDateClick={onDateClick}
+          dayPropsStyle={dayPropsStyle}
+          disabledDayPick={disabledDayPick}
+          selectedDate={selectedDate}
+          startSelectedDate={startSelectedDate}
+          endSelectedDate={endSelectedDate}
+          minDate={minDate}
+          maxDate={maxDate}
+          disabledDates={disabledDates}
+          dayContainerStyle={dayContainerStyle}
+        />,
       );
 
       day = dateFns.addDays(day, 1);
