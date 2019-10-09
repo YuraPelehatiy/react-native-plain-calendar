@@ -45,7 +45,7 @@ export function Cell({
   formattedDate,
   monthStart,
 }: CellPrivateProps) {
-  const isToday: boolean = useMemo(() => {
+  const isToday = useMemo<boolean>(() => {
     if (startSelectedDate && endSelectedDate) {
       return (
         !dateFns.isSameDay(day, startSelectedDate) &&
@@ -57,7 +57,7 @@ export function Cell({
     }
   }, [day, startSelectedDate, endSelectedDate]);
 
-  const isDisabledParticularDate: boolean = useMemo(() => {
+  const isDisabledParticularDate = useMemo<boolean>(() => {
     if (!!disabledDates) {
       return disabledDates.some((disabled: number | Date) =>
         dateFns.isSameDay(day, disabled),
@@ -67,7 +67,7 @@ export function Cell({
     }
   }, [disabledDates, day]);
 
-  const isDisabledDate: boolean = useMemo(() => {
+  const isDisabledDate = useMemo<boolean>(() => {
     const isSameMonth = dateFns.isSameMonth(day, monthStart);
 
     let isBeforeDay = false;
@@ -91,7 +91,7 @@ export function Cell({
     );
   }, [day, monthStart, minDate, maxDate]);
 
-  const isSingleSelectedDate: boolean = useMemo(() => {
+  const isSingleSelectedDate = useMemo<boolean>(() => {
     if (selectedDate) {
       return dateFns.isSameDay(day, selectedDate);
     } else {
@@ -99,7 +99,7 @@ export function Cell({
     }
   }, [selectedDate, day]);
 
-  const isStartSelectedDate: boolean = useMemo(() => {
+  const isStartSelectedDate = useMemo<boolean>(() => {
     if (startSelectedDate) {
       return dateFns.isSameDay(day, startSelectedDate);
     } else {
@@ -107,7 +107,7 @@ export function Cell({
     }
   }, [day, startSelectedDate]);
 
-  const isEndSelectedDate: boolean = useMemo(() => {
+  const isEndSelectedDate = useMemo<boolean>(() => {
     if (endSelectedDate) {
       return dateFns.isSameDay(day, endSelectedDate);
     } else {
@@ -115,7 +115,7 @@ export function Cell({
     }
   }, [day, endSelectedDate]);
 
-  const isIntermediateSelectedDate: boolean = useMemo(
+  const isIntermediateSelectedDate = useMemo<boolean>(
     () =>
       !!(
         startSelectedDate &&

@@ -1,6 +1,6 @@
 import * as dateFns from 'date-fns';
 import * as React from 'react';
-import { useEffect, useReducer, useState } from 'react';
+import { useCallback, useReducer, useState } from 'react';
 import { View, ViewProps } from 'react-native';
 import { dateFormats } from '../constants';
 import { isWithinRangeWithArray } from '../utils';
@@ -89,7 +89,7 @@ function createProps({
 
 export function Calendar({
   onDayPress,
-  initialDate,
+  initialDate = new Date(),
   selectedDate,
   startSelectedDate,
   endSelectedDate,
@@ -111,15 +111,17 @@ export function Calendar({
 }: CalendarProps) {
   const { viewProps, headerPropsStyle, weekPropsStyle, cellsPropsStyle, dayPropsStyle } = createProps(props)
 
-  const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
+  const [currentMonth, setCurrentMonth] = useState<Date>(initialDate);
 
-  useEffect(() => {
-    if (initialDate) {
-      setCurrentMonth(initialDate);
-    }
-  }, []);
+  const onNextMonth = useCallback(() => {
+    setCurrentMonth(dateFns.addMonths(currentMonth, 1));
+  }, [currentMonth])
 
-  function onDateClick(day: Date) {
+  const onPrevMonth = useCallback(() => {
+    setCurrentMonth(dateFns.subMonths(currentMonth, 1));
+  }, [currentMonth])
+
+  const onDateClick = useCallback<(day: Date) => void>((day: Date) => {
     const monthDifferent = dateFns.differenceInCalendarMonths(
       day,
       currentMonth,
@@ -134,15 +136,7 @@ export function Calendar({
     if (onDayPress) {
       onDayPress(day);
     }
-  }
-
-  function onNextMonth() {
-    setCurrentMonth(dateFns.addMonths(currentMonth, 1));
-  }
-
-  function onPrevMonth() {
-    setCurrentMonth(dateFns.subMonths(currentMonth, 1));
-  }
+  }, [onDayPress, currentMonth])
 
   return (
     <View {...viewProps}>
@@ -348,6 +342,7 @@ function Picker({
         return;
       }
       setEndSelectedDate(day);
+      callOnSelected({ selectedStart: startSelectedDate, selectedEnd: day })
     } else {
       if (dateFns.isSameDay(day, endSelectedDate)) {
         setStartEndSelectedDate(startSelectedDate, null);
