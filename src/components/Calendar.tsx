@@ -370,6 +370,13 @@ function Picker({
 
   function onSingleRangeSelect(day: Date) {
     if (selectedDate) {
+      if (dateFns.isSameDay(day, selectedDate)) {
+        setSingleResetStartEndDate(null);
+        callOnSelected({ selected: null, })
+
+        return;
+      }
+
       if (dateFns.isBefore(day, selectedDate)) {
         const endDate = selectedDate;
 
@@ -381,6 +388,20 @@ function Picker({
 
       setStartEndResetSingleDate(selectedDate, day);
       callOnSelected({ selectedStart: selectedDate, selectedEnd: day });
+
+      return;
+    }
+
+    if (startSelectedDate && dateFns.isSameDay(day, endSelectedDate)) {
+      setSingleResetStartEndDate(startSelectedDate);
+      callOnSelected({ selected: startSelectedDate });
+
+      return;
+    }
+
+    if (endSelectedDate && dateFns.isSameDay(day, startSelectedDate)) {
+      setSingleResetStartEndDate(endSelectedDate);
+      callOnSelected({ selected: endSelectedDate });
 
       return;
     }
