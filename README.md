@@ -9,7 +9,9 @@ The solution is implemented in TypeScript so no native module linking is require
 
 ## Examples
 
-TODO: Put here gifs
+![](./gifs/single-select.gif)
+![](./gifs/range-select.gif)
+![](./gifs/single-range-select.gif)
 
 ## Usage
 
