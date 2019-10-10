@@ -156,7 +156,7 @@ Takes the same props as Calendar and also takes extra props
 | Prop         | Type                                                                                             | Description                                                                     | Default |
 | :----------- | :----------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------ | :------ |
 | selectedType | one of `'single','range','single-range'`                                                                 | The type of picker                                                              | -       |
-| onSelected   | `function` | Callback which called when all dates will be selected depends on `selectedType`. Params: `selected: Date | null, selectedStart: Date | null, selectedEnd: Date | null`| -       |
+| onSelected   | `function` | Callback which called when all dates will be selected depends on `selectedType`.| -       |
 
 
 ## License
