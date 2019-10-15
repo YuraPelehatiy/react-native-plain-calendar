@@ -15,7 +15,7 @@ The solution is implemented in TypeScript so no native module linking is require
 
 ## Usage
 
-The simplest usage of this calendar component
+The simplest usage of this calendar component. This library hasn't got any required props, so to use it just import `Calendar` component
 
 ```javascript 
 import React from 'react';
@@ -104,8 +104,6 @@ export default const App = () => (
 ```
 
 ## Calendar props
-
-TODO: describe more components and functions
 
 | Prop                           | Type                    | Description                                                                                                                                                                                                   | Default     |
 | :----------------------------- | :---------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :---------- |
