@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-export default StyleSheet.create({
+export const s = StyleSheet.create({
   weekContainer: {
     margin: 0,
     padding: 0,

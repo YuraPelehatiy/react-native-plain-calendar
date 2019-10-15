@@ -30,42 +30,42 @@ declare module 'react-native-plain-calendar' {
     /**
      * Callback which called when day press
      */
-    onDayPress?(day: string): void
+    onDayPress?(day: Date): void
     
     /**
      * The date that the calendar opens to when it will be mounted.
      */
-    initialDate?: string,
+    initialDate?: Date,
 
     /**
      * The date which will be marked as selected single date
      */
-    selectedDate?: string
+    selectedDate?: Date
 
     /**
      * The date which will be marked as begin date of the range
      */
-    startSelectedDate?: string
+    startSelectedDate?: Date
 
     /**
      * The date which will be marked as end date of the range
      */
-    endSelectedDate?: string
+    endSelectedDate?: Date
 
     /**
      * Minimum date that can be selected
      */
-    minDate?: string
+    minDate?: Date
 
     /**
      * Maximum date that can be selected
      */
-    maxDate?: string
+    maxDate?: Date
     
     /**
-     * Array of the disabled days
+     * Array of disabled days
      */
-    disabledDates?: Array<String>
+    disabledDates?: Date[]
     
     // -------------- HEADER -------------- //
   
@@ -73,7 +73,7 @@ declare module 'react-native-plain-calendar' {
      * The format of the date in the header.
      * react-native-simple-calendar is using the library 'date-fns'. 
      * More information about supported dates formats you can find here:
-     * https://date-fns.org/v1.30.1/docs/format
+     * https://date-fns.org/v2.2.1/docs/format
      */
     headerDateFormat?: string
 
@@ -139,7 +139,7 @@ declare module 'react-native-plain-calendar' {
      * ["Sunday", "Monday", ...]
      * ```
      */
-    weekdays?: Array<String>
+    weekdays?: string[]
 
     /**
      * The style of the week container(View).
@@ -172,6 +172,10 @@ declare module 'react-native-plain-calendar' {
      * The style of the day wrapper(container) component(View).
      */
     dayContainerStyle?: StyleProp<ViewProps>
+
+    /**
+     * Takes a component and renders it instead of default day component
+     */
 
     DayComponent?({  
       onPress,
@@ -256,9 +260,31 @@ declare module 'react-native-plain-calendar' {
      */
     dayDisabledParticularTextStyle?: StyleProp<TextStyle>
     
+    /**
+     * Disable onDayPress
+     */
+    disabledDayPick?: boolean
+    
   }
 
-  declare const Calendar: React.FunctionComponent<CalendarProps>
+  export const Calendar: React.FunctionComponent<CalendarProps>
 
-  export default Calendar
+  export namespace Picker {
+    export interface PickerProps extends CalendarProps {
+        
+        /**
+         * The type of picker
+         */
+
+        selectedType?: 'single' | 'range' | 'single-range';
+        
+        /**
+         * Callback which called when all dates will be selected depends on selectedType
+         */
+        
+        onSelected?(): void;
+    }
+    
+    export const Picker: React.FunctionComponent<PickerProps>
+  } 
 }

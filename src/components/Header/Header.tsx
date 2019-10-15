@@ -1,9 +1,39 @@
-import React from 'react';
-import { View, Text } from 'react-native';
-import dateFns from 'date-fns';
-import T from 'prop-types';
-import HeaderButton from './HeaderButton';
-import s from './styles';
+import * as dateFns from 'date-fns';
+import * as React from 'react';
+import {
+  StyleProp,
+  Text,
+  TextStyle,
+  View,
+  ViewStyle,
+} from 'react-native';
+import {
+  HeaderButton,
+  HeaderButtonComponentProps,
+} from './HeaderButton';
+import { s } from './styles';
+
+export interface HeaderComponentProps {
+  currentMonth: string;
+  onPrevMonth(): void;
+  onNextMonth(): void;
+}
+
+export interface HeaderProps {
+  headerDateFormat: string;
+  headerContainerStyle?: StyleProp<ViewStyle>;
+  headerTitleStyle?: StyleProp<TextStyle>;
+  headerButtonStyle?: StyleProp<ViewStyle>;
+  HeaderComponent?: React.FunctionComponent<HeaderComponentProps> | null;
+  HeaderButtonComponent?: React.FunctionComponent<HeaderButtonComponentProps> | null;
+
+}
+
+interface HeaderPrivateProps extends HeaderProps {
+  currentMonth: Date;
+  onPrevMonth(): void;
+  onNextMonth(): void;
+}
 
 function Header({
   onPrevMonth,
@@ -15,7 +45,7 @@ function Header({
   headerButtonStyle,
   HeaderComponent,
   HeaderButtonComponent,
-}) {
+}: HeaderPrivateProps) {
   const month = dateFns.format(currentMonth, headerDateFormat);
 
   if (HeaderComponent) {
@@ -39,7 +69,7 @@ function Header({
         Previous
       </HeaderButton>
       <View style={[s.headerContainers, s.headerTitleContainer]}>
-        <Text style={headerTitleStyle}>{month}</Text>
+        <Text style={[s.headerTitle, headerTitleStyle]}>{month}</Text>
       </View>
       <HeaderButton
         type="next"
@@ -53,16 +83,6 @@ function Header({
   );
 }
 
-Header.propTypes = {
-  onPrevMonth: T.func.isRequired,
-  currentMonth: T.instanceOf(Date).isRequired,
-  onNextMonth: T.func.isRequired,
-  HeaderComponent: T.func,
-  HeaderButtonComponent: T.func,
-  headerDateFormat: T.string.isRequired,
-  headerContainerStyle: T.any,
-  headerTitleStyle: T.any,
-  headerButtonStyle: T.any,
-};
+const HeaderMemo = React.memo(Header);
 
-export default React.memo(Header);
+export { HeaderMemo as Header };
