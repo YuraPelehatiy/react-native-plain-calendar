@@ -7,9 +7,9 @@
   "module": "index.ts",
   "types": "index.d.ts",
   "files": [
-    "gifs",
     "src",
-    "index.ts"
+    "index.ts",
+    "index.d.ts"
   ],
   "peerDependencies": {
     "react": ">=16.8.3",
