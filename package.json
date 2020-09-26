@@ -1,15 +1,15 @@
 {
   "name": "react-native-plain-calendar",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Calendar component for React-Native",
   "main": "index.ts",
   "react-native": "index.ts",
   "module": "index.ts",
   "types": "index.d.ts",
   "files": [
-    "gifs",
     "src",
-    "index.ts"
+    "index.ts",
+    "index.d.ts"
   ],
   "peerDependencies": {
     "react": ">=16.8.3",
