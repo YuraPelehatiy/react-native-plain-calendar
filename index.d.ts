@@ -268,9 +268,15 @@ declare module 'react-native-plain-calendar' {
   }
 
   export const Calendar: React.FunctionComponent<CalendarProps>
-
+  
   export namespace Picker {
-    export interface PickerProps extends CalendarProps {
+    interface OnSelected {
+      selected?: Date | null,
+      selectedStart?: Date | null,
+      selectedEnd?: Date | null,
+    }
+
+    export interface CalendarPickerProps extends CalendarProps {
         
         /**
          * The type of picker
@@ -282,9 +288,9 @@ declare module 'react-native-plain-calendar' {
          * Callback which called when all dates will be selected depends on selectedType
          */
         
-        onSelected?(): void;
+        onSelected?(dates: OnSelected): void;
     }
     
-    export const Picker: React.FunctionComponent<PickerProps>
+    export const Picker: React.FunctionComponent<CalendarPickerProps>
   } 
 }

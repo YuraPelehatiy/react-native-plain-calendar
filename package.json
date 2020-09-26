@@ -1,6 +1,6 @@
 {
   "name": "react-native-plain-calendar",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Calendar component for React-Native",
   "main": "index.ts",
   "react-native": "index.ts",
@@ -12,11 +12,11 @@
     "index.ts"
   ],
   "peerDependencies": {
-    "react": "16.8.3",
-    "react-native": "0.59.8"
+    "react": ">=16.8.3",
+    "react-native": ">=0.59.0"
   },
   "dependencies": {
-    "date-fns": "2.2.1"
+    "date-fns": ">=2.2.1"
   },
   "devDependencies": {
     "@babel/core": "7.6.0",
@@ -44,7 +44,10 @@
     "react-native-calendar",
     "react-native-plain-calendar",
     "react-native-simple-calendar",
-    "calendar"
+    "calendar-component",
+    "calendar-picker",
+    "calendar",
+    "picker"
   ],
   "author": "Yura Pelehatiy",
   "license": "MIT",
