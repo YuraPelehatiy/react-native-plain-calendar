@@ -2,4 +2,4 @@
 export const headerFormat = 'MMMM yyyy';
 export const daysFormat = 'EEE';
 export const cellsFormat = 'd';
-export const cellsFormatKey = 'd';
+export const cellsFormatKey = 'M d';
