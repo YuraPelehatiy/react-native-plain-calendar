@@ -11,7 +11,7 @@ export interface WeekProps extends WeekdayProps {
   weekContainerStyle?: StyleProp<ViewStyle>
   weekdays: string[],
   weekStartsOn?: WeekDayNumber,
-  WeekdaysComponent?: null,
+  WeekdaysComponent?: React.FunctionComponent,
 }
 
 interface WeekPrivateProps extends WeekProps {
@@ -27,8 +27,8 @@ function Week({
   weekStartsOn,
   WeekdaysComponent,
 }: WeekPrivateProps) {
-  if (WeekdaysComponent === null) {
-    return null;
+  if (WeekdaysComponent) {
+    return <WeekdaysComponent />;
   }
 
   const formatedWeekdays = useMemo<string[]>(() => {
