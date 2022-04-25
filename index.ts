@@ -1,22 +1,22 @@
-import {
-  Calendar,
+import { Calendar } from './src/components/Calendar';
+import type {
   CalendarPickerProps,
   CalendarProps,
 } from './src/components/Calendar';
-import { CellsProps } from './src/components/Cells/Cells';
-import {
+import type { CellsProps } from './src/components/Cells/Cells';
+import type {
   DayComponentProps,
   DayProps,
 } from './src/components/Day/Day';
-import {
+import type {
   HeaderComponentProps,
   HeaderProps,
 } from './src/components/Header/Header';
-import {
+import type {
   HeaderButtonComponentProps,
   HeaderButtonProps,
 } from './src/components/Header/HeaderButton';
-import { WeekProps } from './src/components/Week/Week';
+import type { WeekProps } from './src/components/Week/Week';
 
 export {
   Calendar,
