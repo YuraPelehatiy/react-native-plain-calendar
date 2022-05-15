@@ -1,6 +1,6 @@
 {
   "name": "react-native-plain-calendar",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Calendar component for React-Native",
   "main": "index.ts",
   "react-native": "index.ts",
@@ -9,7 +9,8 @@
   "files": [
     "src",
     "index.ts",
-    "index.d.ts"
+    "index.d.ts",
+    "build"
   ],
   "scripts": {
     "build": "tsc"
