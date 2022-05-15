@@ -4,19 +4,22 @@
   "description": "Calendar component for React-Native",
   "main": "index.ts",
   "react-native": "index.ts",
-  "module": "index.ts",
-  "types": "index.d.ts",
+  "module": "./build/index",
+  "types": "./build/index.d.ts",
   "files": [
     "src",
     "index.ts",
     "index.d.ts"
   ],
+  "scripts": {
+    "build": "tsc"
+  },
   "peerDependencies": {
     "react": ">=16.8.3",
     "react-native": ">=0.59.0"
   },
   "dependencies": {
-    "date-fns": ">=2.2.1"
+    "date-fns": "^2.2.1"
   },
   "devDependencies": {
     "@babel/core": "7.6.0",
